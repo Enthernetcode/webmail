@@ -1,0 +1,54 @@
+import smtplib, csv, random
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+# Zoho Mail SMTP server details
+smtp_server = 'smtp.zoho.com'
+port = 587  # or 465 for SSL
+username = 'getit32'
+password = 'qaz1wsx2.'
+
+# Email details
+sender_email = 'getit32@zohomail.com'
+receiver_email = 'renuelroberts01@gmail.com'
+subject = 'Test Email'
+body = 'This is a test email sent using Python and Zoho Mail.'
+
+replyto = 'Your Reaply to Email Id'
+subject = input('Enter Subject Of your Email:\t')
+name = input('Email Name to mask:\t')
+
+counter = {}
+
+with open("use.csv") as f: #    "user.csv") as f:
+    data = [row for row in csv.reader(f)]
+
+# file_list = ['emails/message' + str(i) + '.txt' for i in range(1,11)] # Multipale Files
+file_list = ['emails/message1.txt'] #Singale Email
+
+with open('mails.csv', 'r') as csvfile:
+    datareader = csv.reader(csvfile)
+    for row in datareader:
+        random_user = random.choice(data)
+        sender = random_user[0]
+        password = random_user[1]
+
+        if sender not in counter:
+            counter[sender] = 0
+
+        if counter[sender] >= 500:
+            continue
+# Create message
+message = MIMEMultipart()
+message['From'] = sender_email
+message['To'] = receiver_email
+message['Subject'] = subject
+message.attach(MIMEText(body, 'plain'))
+
+# Connect to the server
+with smtplib.SMTP(smtp_server, port) as server:
+    server.starttls()  # Secure the connection
+    server.login(username, password)
+    server.send_message(message)
+
+print('Email sent successfully!')

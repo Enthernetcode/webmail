@@ -27,25 +27,14 @@ with open('mails.csv', 'r') as csvfile:
             continue
         
         try:
-           # message = MIMEMultipart()
-           # message['From'] = sender_email
-           # message['To'] = receiver_email
-           # message['Subject'] = subject
-           # message.attach(MIMEText(body, 'plain'))
-
-# Connect to the server
             server =  smtplib.SMTP('smtp.zoho.com', 587)
             server.starttls()
             server.login(sender, password)
-#            server.send_message(message) ###
-#            context = ssl.create_default_context()
-#            server = smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context)
-#            server.login(sender, password)
-            em =EmailMessage()
-            em['from'] = f'{name} <{sender}>'
-            em['Reply-To'] = replyto
-            em['To'] = row
-            em['subject'] = subject
+            em = MIMEMultipart()
+            em['From'] =f'{name} ,{sender}> ' # sender_email
+            em['To'] = row #receiver_email
+            em['Subject'] = subject
+            em.attach(MIMEText(body, 'plain'))
             random_file = random.choice(file_list)
             with open(random_file, 'r') as file:
                 html_msg = file.read()

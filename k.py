@@ -19,20 +19,21 @@ with open('mails.csv', 'r') as csvfile:
         random_user = random.choice(data)
         sender = random_user[0]
         password = random_user[1]
-        
+
         if sender not in counter:
             counter[sender] = 0
-        
+
         if counter[sender] >= 500:
             continue
-        
+
         try:
             server =  smtplib.SMTP('smtp.zoho.com', 587)
             server.starttls()
             server.login(sender, password)
             em = MIMEMultipart()
-            em['From'] =f'{name} ,{sender}> ' # sender_email
-            em['To'] = row #', '.join(row) # em['To'] = row #receiver_email
+            em['From'] = f'{name}, {sender}> ' # sender_email
+            em['To'] = ", ".join(row) #receiver_email
+            print (row)
             em['Subject'] = subject
             random_file = random.choice(file_list)
             with open(random_file, 'r') as file:
@@ -40,7 +41,7 @@ with open('mails.csv', 'r') as csvfile:
             em.attach(MIMEText(html_msg, 'plain'))
             server.send_message(em)
             counter[sender] += 1
-            print(counter[sender], " emails successfully sent", "From ", sender,  "To ", row ,"File ", random_file)
+            print(counter[sender], " emails successfully sent", "From", sender, "To", row, "File", random_file)
             with open("mails.csv", "r") as file:
                 reader = csv.reader(file)
                 rows = list(reader)
@@ -51,7 +52,7 @@ with open('mails.csv', 'r') as csvfile:
                     writer.writerows(rows)
             server.close()
         except Exception as e:
-            print(f"Error sending email From {sender} to {row}:", e )
+            print(f"Error sending email From {sender} to {row}:", e)
             with open("mails.csv", "r") as file:
                 reader = csv.reader(file)
                 rows = list(reader)
